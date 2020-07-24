@@ -4851,9 +4851,7 @@ class CurlyComponentManager extends AbstractManager {
         descriptor = descriptorForProperty(component, keyName);
 
         if (descriptor !== undefined && descriptor._dependentKeys !== undefined && descriptor._dependentKeys.length > 0) {
-          addObserver(component, keyName, () => {
-            component[PROPERTY_DID_CHANGE](keyName);
-          }, undefined, true);
+          addObserver(component, keyName, component[PROPERTY_DID_CHANGE].bind(component, keyName), undefined, true);
         }
       }
     } // Track additional lifecycle metadata about this component in a state bucket.

@@ -555,7 +555,7 @@ function createRouteInfoWithAttributes(routeInfo, context) {
             return context;
         },
     };
-    if (Object.isFrozen(routeInfo) || routeInfo.hasOwnProperty('attributes')) {
+    if (!Object.isExtensible(routeInfo) || routeInfo.hasOwnProperty('attributes')) {
         return Object.freeze(Object.assign({}, routeInfo, attributes));
     }
     return Object.assign(routeInfo, attributes);
@@ -572,7 +572,7 @@ function attachMetadata(route, routeInfo) {
             return buildRouteInfoMetadata(route);
         },
     };
-    if (Object.isFrozen(routeInfo) || routeInfo.hasOwnProperty('metadata')) {
+    if (!Object.isExtensible(routeInfo) || routeInfo.hasOwnProperty('metadata')) {
         return Object.freeze(Object.assign({}, routeInfo, metadata));
     }
     return Object.assign(routeInfo, metadata);
@@ -1242,10 +1242,12 @@ class Router {
             this.toReadOnlyInfos(newTransition, newState);
             this.routeWillChange(newTransition);
             newTransition.promise = newTransition.promise.then((result) => {
-                this._updateURL(newTransition, oldState);
-                this.didTransition(this.currentRouteInfos);
-                this.toInfos(newTransition, newState.routeInfos, true);
-                this.routeDidChange(newTransition);
+                if (!newTransition.isAborted) {
+                    this._updateURL(newTransition, oldState);
+                    this.didTransition(this.currentRouteInfos);
+                    this.toInfos(newTransition, newState.routeInfos, true);
+                    this.routeDidChange(newTransition);
+                }
                 return result;
             }, null, promiseLabel('Transition complete'));
             return newTransition;

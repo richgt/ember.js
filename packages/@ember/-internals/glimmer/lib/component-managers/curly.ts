@@ -339,9 +339,7 @@ export default class CurlyComponentManager
           addObserver(
             component,
             keyName,
-            () => {
-              component[PROPERTY_DID_CHANGE](keyName);
-            },
+            component[PROPERTY_DID_CHANGE].bind(component, keyName),
             undefined,
             true
           );

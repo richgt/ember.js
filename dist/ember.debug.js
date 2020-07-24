@@ -6,7 +6,7 @@
  *            Portions Copyright 2008-2011 Apple Inc. All rights reserved.
  * @license   Licensed under MIT license
  *            See https://raw.github.com/emberjs/ember.js/master/LICENSE
- * @version   3.16.8-richgt-3-16-fix+f53f978d
+ * @version   3.16.8-richgt-3-16-fix+6cb452e9
  */
 /*globals process */
 var define, require, Ember; // Used in @ember/-internals/environment/lib/global.js
@@ -7474,9 +7474,7 @@ define("@ember/-internals/glimmer/index", ["exports", "@ember/polyfills", "@embe
           descriptor = (0, _metal.descriptorForProperty)(component, keyName);
 
           if (descriptor !== undefined && descriptor._dependentKeys !== undefined && descriptor._dependentKeys.length > 0) {
-            (0, _metal.addObserver)(component, keyName, () => {
-              component[_metal.PROPERTY_DID_CHANGE](keyName);
-            }, undefined, true);
+            (0, _metal.addObserver)(component, keyName, component[_metal.PROPERTY_DID_CHANGE].bind(component, keyName), undefined, true);
           }
         }
       } // Track additional lifecycle metadata about this component in a state bucket.
@@ -57594,7 +57592,7 @@ define("ember/version", ["exports"], function (_exports) {
     value: true
   });
   _exports.default = void 0;
-  var _default = "3.16.8-richgt-3-16-fix+f53f978d";
+  var _default = "3.16.8-richgt-3-16-fix+6cb452e9";
   _exports.default = _default;
 });
 define("node-module/index", ["exports"], function (_exports) {
@@ -59159,7 +59157,7 @@ define("router_js", ["exports", "@ember/polyfills", "rsvp", "route-recognizer"],
 
     };
 
-    if (Object.isFrozen(routeInfo) || routeInfo.hasOwnProperty('attributes')) {
+    if (!Object.isExtensible(routeInfo) || routeInfo.hasOwnProperty('attributes')) {
       return Object.freeze((0, _polyfills.assign)({}, routeInfo, attributes));
     }
 
@@ -59182,7 +59180,7 @@ define("router_js", ["exports", "@ember/polyfills", "rsvp", "route-recognizer"],
 
     };
 
-    if (Object.isFrozen(routeInfo) || routeInfo.hasOwnProperty('metadata')) {
+    if (!Object.isExtensible(routeInfo) || routeInfo.hasOwnProperty('metadata')) {
       return Object.freeze((0, _polyfills.assign)({}, routeInfo, metadata));
     }
 
@@ -59963,11 +59961,14 @@ define("router_js", ["exports", "@ember/polyfills", "rsvp", "route-recognizer"],
         this.toReadOnlyInfos(newTransition, newState);
         this.routeWillChange(newTransition);
         newTransition.promise = newTransition.promise.then(result => {
-          this._updateURL(newTransition, oldState);
+          if (!newTransition.isAborted) {
+            this._updateURL(newTransition, oldState);
 
-          this.didTransition(this.currentRouteInfos);
-          this.toInfos(newTransition, newState.routeInfos, true);
-          this.routeDidChange(newTransition);
+            this.didTransition(this.currentRouteInfos);
+            this.toInfos(newTransition, newState.routeInfos, true);
+            this.routeDidChange(newTransition);
+          }
+
           return result;
         }, null, promiseLabel('Transition complete'));
         return newTransition;
