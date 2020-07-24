@@ -341,7 +341,7 @@ export default class CurlyComponentManager
             keyName,
             component[PROPERTY_DID_CHANGE].bind(component, keyName),
             undefined,
-            true
+            false
           );
         }
       }

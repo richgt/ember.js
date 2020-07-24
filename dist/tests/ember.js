@@ -6,7 +6,7 @@
  *            Portions Copyright 2008-2011 Apple Inc. All rights reserved.
  * @license   Licensed under MIT license
  *            See https://raw.github.com/emberjs/ember.js/master/LICENSE
- * @version   3.16.8-richgt-3-16-fix+6cb452e9
+ * @version   3.16.8-richgt-3-16-async-fyx+fba7ac75
  */
 /*globals process */
 var define, require, Ember; // Used in @ember/-internals/environment/lib/global.js
@@ -7704,7 +7704,7 @@ define("@ember/-internals/glimmer/index", ["exports", "ember-babel", "@ember/pol
           descriptor = (0, _metal.descriptorForProperty)(component, keyName);
 
           if (descriptor !== undefined && descriptor._dependentKeys !== undefined && descriptor._dependentKeys.length > 0) {
-            (0, _metal.addObserver)(component, keyName, component[_metal.PROPERTY_DID_CHANGE].bind(component, keyName), undefined, true);
+            (0, _metal.addObserver)(component, keyName, component[_metal.PROPERTY_DID_CHANGE].bind(component, keyName), undefined, false);
           }
         }
       } // Track additional lifecycle metadata about this component in a state bucket.
@@ -56634,7 +56634,7 @@ define("ember/version", ["exports"], function (_exports) {
     value: true
   });
   _exports.default = void 0;
-  var _default = "3.16.8-richgt-3-16-fix+6cb452e9";
+  var _default = "3.16.8-richgt-3-16-async-fyx+fba7ac75";
   _exports.default = _default;
 });
 define("node-module/index", ["exports"], function (_exports) {

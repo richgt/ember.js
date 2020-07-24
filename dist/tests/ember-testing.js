@@ -6,7 +6,7 @@
  *            Portions Copyright 2008-2011 Apple Inc. All rights reserved.
  * @license   Licensed under MIT license
  *            See https://raw.github.com/emberjs/ember.js/master/LICENSE
- * @version   3.16.8-richgt-3-16-fix+6cb452e9
+ * @version   3.16.8-richgt-3-16-async-fyx+fba7ac75
  */
 /*globals process */
 var define, require, Ember; // Used in @ember/-internals/environment/lib/global.js
