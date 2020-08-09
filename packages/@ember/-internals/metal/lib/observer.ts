@@ -17,6 +17,7 @@ interface ActiveObserver {
 const SYNC_DEFAULT = !ENV._DEFAULT_ASYNC_OBSERVERS;
 export const SYNC_OBSERVERS: Map<object, Map<string, ActiveObserver>> = new Map();
 export const ASYNC_OBSERVERS: Map<object, Map<string, ActiveObserver>> = new Map();
+window.observerCounts = {};
 
 /**
 @module @ember/object
@@ -90,7 +91,11 @@ function getOrCreateActiveObserversFor(target: object, sync: boolean) {
 
 export function activateObserver(target: object, eventName: string, sync = false) {
   let activeObservers = getOrCreateActiveObserversFor(target, sync);
-
+  if (!Ember.isNone(window.observerCounts[eventName])){
+    window.observerCounts[eventName]++
+  } else {
+    window.observerCounts[eventName] = 1;
+  }
   if (activeObservers.has(eventName)) {
     activeObservers.get(eventName)!.count++;
   } else {
@@ -108,6 +113,7 @@ export function activateObserver(target: object, eventName: string, sync = false
 }
 
 export function deactivateObserver(target: object, eventName: string, sync = false) {
+  window.observerCounts[eventName]--;
   let observerMap = sync === true ? SYNC_OBSERVERS : ASYNC_OBSERVERS;
 
   let activeObservers = observerMap.get(target);
